@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Notes Summarizer</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 40px;
+            background: #f4f4f4;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>AI Notes Summarizer</h2>
+
+<textarea id="text" placeholder="Enter your text here..."></textarea><br>
+
+<button onclick="summarize()">Summarize</button>
+
+<div id="result"></div>
+
+<script>
+async function summarize() {
+    const text = document.getElementById("text").value;
+
+    if (!text) {
+        alert("Please enter some text");
+        return;
+    }
+
+    document.getElementById("result").innerText = "Processing...";
+
+    const res = await fetch("/summarize", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ text })
+    });
+
+    const data = await res.json();
+    document.getElementById("result").innerText = data.summary;
+}
+</script>
+
+</body>
+</html>
