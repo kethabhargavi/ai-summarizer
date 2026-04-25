@@ -27,7 +27,16 @@ def summarize():
             "Content-Type": "application/json"
         }
 
-        response = requests.post(API_URL, headers=headers, json={"inputs": text})
+        response = requests.post(
+            API_URL,
+            headers=headers,
+            json={"inputs": text, "options": {"wait_for_model": True}},
+            timeout=60
+        )
+
+        # ✅ CORRECT INDENTATION
+        print("STATUS:", response.status_code)
+        print("RESPONSE:", response.text)
 
         if response.status_code != 200:
             return jsonify({"summary": "API Error: " + response.text})
@@ -45,4 +54,4 @@ def summarize():
         return jsonify({"summary": f"Error: {str(e)}"})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
