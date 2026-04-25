@@ -4,7 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# Get API key from environment
 HF_API_KEY = os.getenv("HF_API_KEY")
 
 API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
@@ -22,19 +21,24 @@ def summarize():
         if not text:
             return jsonify({"summary": "Please enter some text."})
 
-        headers = {
-            "Authorization": f"Bearer {HF_API_KEY}",
-            "Content-Type": "application/json"
-        }
-
         response = requests.post(
             API_URL,
-            headers=headers,
-            json={"inputs": text, "options": {"wait_for_model": True}},
+            headers={
+                "Authorization": f"Bearer {HF_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "inputs": text,
+                "parameters": {
+                    "max_length": 130,
+                    "min_length": 30,
+                    "do_sample": False
+                },
+                "options": {"wait_for_model": True}
+            },
             timeout=60
         )
 
-        # ✅ CORRECT INDENTATION
         print("STATUS:", response.status_code)
         print("RESPONSE:", response.text)
 
